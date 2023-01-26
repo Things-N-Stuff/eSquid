@@ -1,0 +1,23 @@
+[project]
+name = "eSquid"
+version = "0.0.1"
+dependencies = [
+    "discord.py >= 2.1.0"
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 100
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.pylint.format]
+max-line-length = 100
+
+[tool.pylsp-mypy]
+enabled = true
