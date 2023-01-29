@@ -11,6 +11,15 @@
         (with python3Packages; [
           python
           discordpy
+
+          pyls-isort
+          pylsp-mypy
+          python-lsp-black
+          python-lsp-server
+          #python-lsp-server.optional-dependencies.pycodestyle
+          #python-lsp-server.optional-dependencies.pydocstyle
+          python-lsp-server.optional-dependencies.pylint
+          python-lsp-server.optional-dependencies.rope
         ])
       ];
     };
