@@ -10,17 +10,8 @@ import logging
 import discord
 from discord.ext import commands
 
+# Setup logging
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-l_handler = logging.StreamHandler()
-l_handler.setLevel(logging.INFO)
-
-l_format = logging.Formatter(
-    fmt="%(asctime)s %(levelname)-8s %(name)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
-)
-l_handler.setFormatter(l_format)
-logger.addHandler(l_handler)
 
 
 class Internals(commands.Cog):
@@ -90,3 +81,4 @@ class Internals(commands.Cog):
 async def setup(bot):
     """Setup function for discord.py extensions"""
     await bot.add_cog(Internals(bot))
+    logger.info("Loaded")

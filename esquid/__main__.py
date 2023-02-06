@@ -5,17 +5,13 @@ from pathlib import Path
 import discord
 from discord.ext import commands
 
+# Setup logging
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-l_handler = logging.StreamHandler()
-l_handler.setLevel(logging.INFO)
-
-l_format = logging.Formatter(
-    fmt="%(asctime)s %(levelname)-8s %(name)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+logging.basicConfig(
+    format="%(asctime)s %(levelname)-8s %(name)s %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    level=logging.INFO,
 )
-l_handler.setFormatter(l_format)
-logger.addHandler(l_handler)
 
 
 class Esquid(commands.Bot):
@@ -50,25 +46,25 @@ class Esquid(commands.Bot):
         logger.info("Serving %d guild(s)", len(self.guilds))
 
 
-if __name__ == "__main__":
-    # Get bot token, testing guild, and bot admins
-    token = Path(".bot_token").read_text(encoding="utf-8")
-    testing_guild = int(Path(".testing_guild_id").read_text(encoding="utf-8"))
+# Get bot token, testing guild, and bot admins
+token = Path(".bot_token").read_text(encoding="utf-8")
+testing_guild = int(Path(".testing_guild_id").read_text(encoding="utf-8"))
 
-    bot_admins = []
-    with Path(".bot_admin_ids").open("r", encoding="utf-8") as f:
-        bot_admins.append(int(f.readline()))
+bot_admins = []
+with Path(".bot_admin_ids").open("r", encoding="utf-8") as f:
+    bot_admins.append(int(f.readline()))
 
-    # Setup bot
-    intents = discord.Intents.default()
-    cogs = ("internals", "fun", "moderation", "self_serve")
-    bot = Esquid(
-        owner_ids=set(bot_admins),
-        initial_cogs=cogs,
-        testing_guild_id=testing_guild,
-        command_prefix=commands.when_mentioned,
-        intents=intents,
-    )
 
-    # Run bot
-    bot.run(token)
+# Setup bot
+intents = discord.Intents.default()
+cogs = ("internals", "fun", "moderation", "self_serve")
+bot = Esquid(
+    owner_ids=set(bot_admins),
+    initial_cogs=cogs,
+    testing_guild_id=testing_guild,
+    command_prefix=commands.when_mentioned,
+    intents=intents,
+)
+
+# Run bot
+bot.run(token)
