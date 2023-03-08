@@ -1,13 +1,12 @@
 # eSquid
 Generic discord bot
 
+## Current Features
+- Self assignable color roles
+
 ## Planned Features
-- [ ] Birthday announcements
-- [ ] Channel locking
-- [ ] Channel slow mode
-- [ ] Chooser
-- [ ] Message purge
-- [ ] Random number
-- [ ] User assigned color roles
-- [ ] User reports
-- [ ] User voice channel creation
+- Birthday announcements
+- Random item picker
+- Random number generator
+- User voice channel creation
+- Polls

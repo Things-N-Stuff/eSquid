@@ -57,6 +57,7 @@ with Path(".bot_admin_ids").open("r", encoding="utf-8") as f:
 
 # Setup bot
 intents = discord.Intents.default()
+intents.members = True
 cogs = ("internals", "fun", "moderation", "self_serve")
 bot = Esquid(
     owner_ids=set(bot_admins),
