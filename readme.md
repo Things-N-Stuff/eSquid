@@ -1,5 +1,5 @@
 # eSquid
-Generic discord bot
+A quality of life bot for small servers
 
 ## Current Features
 - Self assignable color roles
