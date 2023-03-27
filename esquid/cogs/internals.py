@@ -34,7 +34,7 @@ class Internals(commands.Cog):
         """Load cogs"""
         for cog in args:
             try:
-                await self.bot.load_extension(f"cogs.{cog}")
+                await self.bot.load_extension(f".cogs.{cog}", package="esquid")
             except commands.ExtensionAlreadyLoaded as err:
                 await self.dm_error(ctx.author, err)
             except commands.ExtensionNotFound as err:
@@ -51,7 +51,7 @@ class Internals(commands.Cog):
         """Unload cogs"""
         for cog in args:
             try:
-                await self.bot.unload_extension(f"cogs.{cog}")
+                await self.bot.unload_extension(f".cogs.{cog}", package="esquid")
             except commands.ExtensionNotFound as err:
                 await self.dm_error(ctx.author, err)
             except commands.ExtensionNotLoaded as err:
@@ -66,7 +66,7 @@ class Internals(commands.Cog):
         """Reload cogs"""
         for cog in args:
             try:
-                await self.bot.reload_extension(f"cogs.{cog}")
+                await self.bot.reload_extension(f".cogs.{cog}", package="esquid")
             except commands.ExtensionNotFound as err:
                 await self.dm_error(ctx.author, err)
             except commands.ExtensionNotLoaded as err:
