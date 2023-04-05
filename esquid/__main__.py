@@ -83,7 +83,9 @@ def main():
         if admin_ids is None:
             admin_ids = []
             with admin_ids_file.open("r", encoding="utf-8") as f:
-                admin_ids.append(int(f.readline()))
+                for raw_line in f:
+                    if line := raw_line.rstrip():
+                        admin_ids.append(int(line))
 
     if token_file.exists():
         token = token_file.read_text(encoding="utf-8") if token is None else None
