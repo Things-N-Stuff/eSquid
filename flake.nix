@@ -3,72 +3,43 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem(system:
+  outputs = { self, nixpkgs }:
     let
-      pkgVersion = "0.0.1";
-
-      pkgs = nixpkgs.legacyPackages.${system};
-      lib = nixpkgs.lib;
-
-      deps = with pkgs; [ ];
-
-      pythonDeps = with pkgs.python3Packages; [
-        discordpy
-        setuptools
-      ];
-
-      devDeps = with pkgs; [
-        ruff
-        (with python3Packages; [
-          black
-          isort
-        ])
-      ];
-    in {
-
-
-      # Development environment (nix develop)
-      devShells.default = pkgs.mkShellNoCC {
-        buildInputs = deps ++ pythonDeps ++ devDeps;
+      system = "x86_64-linux";
+      pkgs = import nixpkgs { inherit system; };
+    in
+    {
+      devShells."x86_64-linux".default = pkgs.mkShellNoCC {
+        buildInputs = with pkgs; [
+          ruff
+          (with python3Packages; [
+            black
+            discordpy
+            isort
+            setuptools
+          ])
+        ];
       };
 
-      # eSquid package (nix build)
-      packages.default = pkgs.python3Packages.buildPythonApplication rec {
-        pname = "eSquid";
-        version = pkgVersion;
+      overlays.default = final: prev: {
+        esquid = final.callPackage ./nix/pkgs { };
+      };
 
-        src = ./.;
-        format = "pyproject";
-
-        buildInputs = deps;
-        propagatedBuildInputs = pythonDeps;
-
-        meta = {
-          homepage = "https://github.com/Things-N-Stuff/eSquid";
-          description = "A discord bot providing some quality of life for small servers";
-          license = lib.licenses.bsd0;
+      packages.${system} =
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [ self.overlays.default ];
+          };
+        in
+        {
+          default = pkgs.esquid;
         };
+
+      nixosModules.${system} = {
+        eSquid = import ./nix/modules/eSquid.nix;
       };
-
-      # TODO: service
-      # eSquid service module
-      # nixosModules.default =
-
-      # TODO: overlay?
-      # eSquid overlay
-      #overlays.default = {};
-
-      # Run eSquid (nix run . -- -a ... -g ... -t ...)
-      # -a, --admins <admin-id-1>,<admin-id-2>,<admin-id-3>,...
-      # -g, --guild <initial-guild-id>
-      # -t, --token <bot-token>
-      apps.default = {
-        type = "app";
-        program = "${self.packages.${system}.default}/bin/esquid";
-      };
-    });
+    };
 }
