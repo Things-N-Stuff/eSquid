@@ -94,9 +94,9 @@ def main():
         testing_guild = guild_file.read_text(encoding="utf-8") if testing_guild is None else None
 
     # If we still don't have a token, guild, or admin ids then exit
-    if token is None or testing_guild is None or admin_ids is None:
+    if token is None:
         logger.critical("Unable to start bot")
-        logger.critical("Missing either token, guild, or admin_ids")
+        logger.critical("Missing token")
         logger.critical(f"token: {token}")
         logger.critical(f"guild: {testing_guild}")
         logger.critical(f"admin_ids: {admin_ids}")
@@ -107,9 +107,9 @@ def main():
     intents.members = True
     cogs = ("internals", "fun", "moderation", "self_serve")
     bot = Esquid(
-        owner_ids=set(admin_ids),
+        owner_ids=set(admin_ids) if admin_ids else None,
         initial_cogs=cogs,
-        testing_guild_id=testing_guild,
+        testing_guild_id=testing_guild if testing_guild else None,
         command_prefix=commands.when_mentioned,
         intents=intents,
     )
