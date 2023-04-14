@@ -5,8 +5,8 @@ A quality of life bot for small servers
 - Self assignable color roles
 
 ## Planned Features
-- Birthday announcements
 - Random item picker
 - Random number generator
-- User voice channel creation
+- User creatabke voice channels
 - Polls
+- Youtube audio playback
