@@ -20,9 +20,7 @@ class Internals(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def dm_error(
-        self, user: discord.User | discord.Member, error: Exception, message: str = ""
-    ):
+    async def dm_error(self, user: discord.User | discord.Member, error: Exception, message: str = ""):
         """helper function to direct messeage errors to users"""
         logger.error(error)
         user_dm = await user.create_dm()
@@ -35,11 +33,7 @@ class Internals(commands.Cog):
         for cog in args:
             try:
                 await self.bot.load_extension(f".cogs.{cog}", package="esquid")
-            except commands.ExtensionAlreadyLoaded as err:
-                await self.dm_error(ctx.author, err)
-            except commands.ExtensionNotFound as err:
-                await self.dm_error(ctx.author, err)
-            except (commands.NoEntryPointError, commands.ExtensionFailed) as err:
+            except Exception as err:
                 await self.dm_error(ctx.author, err)
 
         await self.bot.tree.sync()
@@ -52,9 +46,7 @@ class Internals(commands.Cog):
         for cog in args:
             try:
                 await self.bot.unload_extension(f".cogs.{cog}", package="esquid")
-            except commands.ExtensionNotFound as err:
-                await self.dm_error(ctx.author, err)
-            except commands.ExtensionNotLoaded as err:
+            except Exception as err:
                 await self.dm_error(ctx.author, err)
 
         await self.bot.tree.sync()
@@ -67,11 +59,7 @@ class Internals(commands.Cog):
         for cog in args:
             try:
                 await self.bot.reload_extension(f".cogs.{cog}", package="esquid")
-            except commands.ExtensionNotFound as err:
-                await self.dm_error(ctx.author, err)
-            except commands.ExtensionNotLoaded as err:
-                await self.dm_error(ctx.author, err)
-            except (commands.NoEntryPointError, commands.ExtensionFailed) as err:
+            except Exception as err:
                 await self.dm_error(ctx.author, err)
 
         await self.bot.tree.sync()

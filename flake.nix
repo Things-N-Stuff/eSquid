@@ -18,6 +18,7 @@
             black
             discordpy
             isort
+            ruff-lsp
             setuptools
           ])
         ];

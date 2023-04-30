@@ -16,11 +16,11 @@ build-backend = "setuptools.build_meta"
 exclude = ["nix"]
 
 [tool.ruff]
-line-length = 100
+line-length = 120
 
 [tool.black]
-line-length = 100
+line-length = 120
 
 [tool.isort]
 profile = "black"
-line_length = 100
+line_length = 120

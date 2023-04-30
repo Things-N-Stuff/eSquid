@@ -1,5 +1,5 @@
 .bot_token
 .admin_ids
-.guild_id
+.testing_guild_id
 __pycache__
 result
