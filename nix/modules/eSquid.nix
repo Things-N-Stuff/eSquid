@@ -36,7 +36,8 @@ in
       };
 
       botAdminIDs = mkOption {
-        type = types.listOf (types.strMatching "[0-9]*");
+        type = types.listOf (types.strMatching ''^([0-9]*)$'');
+        default = [""];
         example = literalExpression "[ 135935815825096705 1085405405972279336]";
         description = ''
           Discord IDs of users that can run more dangerous commands such as unload.
@@ -44,8 +45,9 @@ in
         '';
       };
 
-      defaultGuild = mkOption {
-        type = types.strMatching "[0-9]*";
+      testingGuild = mkOption {
+        type = types.strMatching ''^([0-9]*)$'';
+        default = "";
         example = literalExpression "375409834197123092";
         description = ''
           The default guild determines which Discord server will recieve app commands first.
@@ -82,26 +84,15 @@ in
       enable = cfg.enable;
       after = [ "network.target" ];
       description = "eSquid Discord bot";
-      environment = { ESQUID_DATA_DIR = cfg.dataDir; };
-      preStart =
-        let
-          token = builtins.toFile ".bot_token" ''
-            ${cfg.token}
-          '';
-          admins = builtins.toFile ".admin_ids" ''
-            ${strings.concatMapStrings (x: x + "\n") cfg.botAdminIDs}
-          '';
-          guild = builtins.toFile ".guild_id" ''
-            ${cfg.defaultGuild}
-          '';
-        in
-        ''
-          mkdir -p ${cfg.dataDir}
-          cd ${cfg.dataDir}
-          ln -sf ${token} .bot_token
-          ln -sf ${admins} .admin_ids
-          ln -sf ${guild} .guild_id
-        '';
+      environment = {
+        ESQUID_ADMINS = strings.concatStrings (strings.intersperse "," cfg.botAdminIDs);
+        ESQUID_DATA_DIR = cfg.dataDir;
+        ESQUID_TESTING_GUILD = cfg.testingGuild;
+        ESQUID_TOKEN = cfg.token;
+      };
+      preStart = ''
+        mkdir -p ${cfg.dataDir}
+      '';
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/esquid";
         Restart = "always";
