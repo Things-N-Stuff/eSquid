@@ -7,6 +7,6 @@ A quality of life bot for small servers
 ## Planned Features
 - Random item picker
 - Random number generator
-- User creatabke voice channels
+- User creatable voice channels
 - Polls
 - Youtube audio playback
