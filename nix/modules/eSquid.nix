@@ -17,10 +17,21 @@ in
       };
 
       token = mkOption {
-        type = types.str;
+        type = with types; nullOr str;
+        default = null;
         example = literalExpression "XXXXXXXXXXXXXXXXXXXXXXXX.XXXXXX.XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
         description = ''
           The token for the Discord bot account.
+          This option takes precedence over tokenFile.
+          If you do not have this, you can get it from https://discord.com/developers.
+        '';
+      };
+
+      tokenFile = mkOption {
+        type = with types; nullOr path;
+        default = null;
+        description = ''
+          The full path to a file containing the Discord bot token.
           If you do not have this, you can get it from https://discord.com/developers.
         '';
       };
@@ -37,7 +48,7 @@ in
 
       botAdminIDs = mkOption {
         type = types.listOf (types.strMatching ''^([0-9]*)$'');
-        default = [""];
+        default = [ "" ];
         example = literalExpression "[ 135935815825096705 1085405405972279336]";
         description = ''
           Discord IDs of users that can run more dangerous commands such as unload.
@@ -64,6 +75,14 @@ in
   };
 
   config = mkIf cfg.enable {
+    assertions = [{
+      assertion = !((cfg.token != null) && (cfg.tokenFile != null));
+      message = ''
+        Set either 'services.eSquid.token' or 'services.eSquid.tokenFile', not both.
+      '';
+    }];
+
+    # Make this configurable?
     users = {
       users.esquid = {
         description = "eSquid Discord bot service user";
@@ -84,14 +103,20 @@ in
       enable = cfg.enable;
       after = [ "network.target" ];
       description = "eSquid Discord bot";
-      environment = {
-        ESQUID_ADMINS = strings.concatStrings (strings.intersperse "," cfg.botAdminIDs);
-        ESQUID_DATA_DIR = cfg.dataDir;
-        ESQUID_TESTING_GUILD = cfg.testingGuild;
-        ESQUID_TOKEN = cfg.token;
-      };
+      environment = mkMerge [
+        {
+          ESQUID_ADMINS = strings.concatStrings (strings.intersperse "," cfg.botAdminIDs);
+          ESQUID_DATA_DIR = cfg.dataDir;
+          ESQUID_TESTING_GUILD = cfg.testingGuild;
+        }
+        (mkIf (cfg.token != null) {
+          ESQUID_TOKEN = cfg.token;
+        })
+      ];
+
       preStart = ''
         mkdir -p ${cfg.dataDir}
+        ln -sf ${cfg.tokenFile} ${cfg.dataDir}/.bot_token
       '';
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/esquid";

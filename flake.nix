@@ -15,10 +15,7 @@
         buildInputs = with pkgs; [
           ruff
           (with python3Packages; [
-            black
             discordpy
-            isort
-            ruff-lsp
             setuptools
           ])
         ];
