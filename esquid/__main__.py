@@ -99,7 +99,7 @@ def main():
         logger.critical(f"token: {token}")
         logger.critical(f"guild: {testing_guild}")
         logger.critical(f"admin_ids: {admin_ids}")
-        sys.exit()
+        sys.exit(1)
 
     # Setup bot
     intents = discord.Intents.default()
