@@ -3,7 +3,9 @@ Contains commands for users to serve themselves
 
 color - apply any hex color to yourself
 """
+
 import logging
+import re
 from typing import cast
 
 import discord
@@ -24,8 +26,19 @@ class SelfServe(commands.Cog):
     @app_commands.describe(color="HEX color to apply")
     async def color(self, interaction: discord.Interaction, color: str):
         # Normalize hex value to #XXXXXX
-        # TODO: expand #XXX to #XXXXXX
-        # TODO: regex to make sure value is valid
+        if not re.fullmatch("^#?(?:[0-9a-fA-F]{3}){1,2}$", color):
+            await interaction.response.send_message(
+                (
+                    f"`{color}` is not a valid color. "
+                    "Should be a hex color in the format `#XXX` or `#XXXXXX` "
+                    "where `X` is a hex value between `0-9` or `a-f`."
+                ),
+                ephemeral=True,
+            )
+            return
+
+        if len(color) == 3 or len(color) == 4:
+            color = "#" + (color[-3] * 2) + (color[-2] * 2) + (color[-1] * 2)
         color = color.lower() if color.startswith("#") else f"#{color.lower()}"
         role_name = f"eSquid_{color}"
 
