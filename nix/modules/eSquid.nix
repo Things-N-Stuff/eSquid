@@ -101,7 +101,8 @@ in
 
     systemd.services.esquid = {
       enable = cfg.enable;
-      after = [ "network.target" ];
+      after = [ "network-online.target" ];
+      requires = [ "network-online.target" ];
       description = "eSquid Discord bot";
       environment = mkMerge [
         {
